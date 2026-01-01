@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nayamitr - Legal Aid & Assistance</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Charts Loader -->
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9', // Sky blue
+                            600: '#0284c7',
+                            800: '#075985',
+                            900: '#0c4a6e', // Deep Navy
+                        },
+                        accent: {
+                            400: '#fbbf24', // Amber/Gold for justice theme
+                            500: '#f59e0b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar for Chat */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tooltip customization for Google Charts */
+        .google-visualization-tooltip {
+            border-radius: 8px !important;
+            border: none !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+            font-family: 'Inter', sans-serif !important;
+            padding: 12px !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 font-sans antialiased overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="bg-brand-900 p-2 rounded-lg text-white">
+                        <i data-lucide="scale" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="font-serif font-bold text-2xl text-brand-900 tracking-tight">Nayamitr</span>
+                        <span class="text-xs block text-brand-600 font-medium tracking-widest uppercase">Legal Companion</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-4 lg:space-x-8 items-center">
+                    <a href="#" onclick="navigateTo('home')" class="text-gray-600 hover:text-brand-800 font-medium transition text-sm lg:text-base">Home</a>
+                    <a href="#" onclick="navigateTo('overview')" class="text-gray-600 hover:text-brand-800 font-medium transition text-sm lg:text-base">Overview</a>
+                    <a href="#" onclick="navigateTo('services')" class="text-gray-600 hover:text-brand-800 font-medium transition text-sm lg:text-base">Services</a>
+                    <a href="#" onclick="navigateTo('lawyers')" class="text-gray-600 hover:text-brand-800 font-medium transition text-sm lg:text-base">Lawyers</a>
+                    <a href="#" onclick="navigateTo('cases')" class="text-brand-600 bg-brand-50 px-3 py-1 rounded-full hover:bg-brand-100 font-medium transition flex items-center gap-2 text-sm lg:text-base">
+                        <i data-lucide="map" class="w-4 h-4"></i> Map
+                    </a>
+                    <a href="#" onclick="navigateTo('chat')" class="text-gray-600 hover:text-brand-800 font-medium transition text-sm lg:text-base">AI Chat</a>
+                    <button class="bg-brand-900 text-white px-5 py-2 rounded-full font-medium hover:bg-brand-800 transition shadow-lg hover:shadow-brand-900/20 transform hover:-translate-y-0.5 text-sm lg:text-base">
+                        Login
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-brand-900 focus:outline-none">
+                        <i data-lucide="menu" class="w-8 h-8"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-2 shadow-lg">
+                <a href="#" onclick="navigateTo('home'); toggleMobileMenu()" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-900">Home</a>
+                <a href="#" onclick="navigateTo('overview'); toggleMobileMenu()" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-900">Overview</a>
+                <a href="#" onclick="navigateTo('services'); toggleMobileMenu()" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-900">Services</a>
+                <a href="#" onclick="navigateTo('lawyers'); toggleMobileMenu()" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-900">Find Lawyers</a>
+                <a href="#" onclick="navigateTo('cases'); toggleMobileMenu()" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-900">Case Pendency Map</a>
+                <a href="#" onclick="navigateTo('chat'); toggleMobileMenu()" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-brand-900">AI Assistant</a>
+                <div class="pt-4">
+                    <button class="w-full bg-brand-900 text-white px-4 py-3 rounded-lg font-medium">Login</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main id="main-content" class="pt-20 min-h-screen">
+        
+        <!-- SECTION: HOME / HERO -->
+        <section id="home" class="fade-in block">
+            <!-- Hero Banner -->
+            <div class="relative bg-brand-900 text-white overflow-hidden">
+                <!-- Abstract Background Shapes -->
+                <div class="absolute inset-0 opacity-10">
+                    <svg class="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white" />
+                    </svg>
+                </div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 relative z-10 flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2 space-y-6">
+                        <div class="inline-flex items-center gap-2 bg-brand-800/50 px-4 py-1.5 rounded-full border border-brand-700">
+                            <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse"></span>
+                            <span class="text-sm font-medium text-brand-100">AI-Powered Legal Assistance</span>
+                        </div>
+                        <h1 class="text-4xl md:text-6xl font-serif font-bold leading-tight">
+                            Justice Made <br/>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent-400 to-yellow-200">Accessible & Simple</span>
+                        </h1>
+                        <p class="text-lg text-brand-100 max-w-lg leading-relaxed">
+                            Nayamitr bridges the gap between you and the law. Get instant legal advice, draft documents, and connect with top lawyers in your language.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <button onclick="navigateTo('chat')" class="bg-accent-500 text-white px-8 py-4 rounded-xl font-bold hover:bg-accent-400 transition shadow-lg shadow-accent-500/30 flex items-center justify-center gap-2">
+                                <i data-lucide="message-square"></i> Ask Nayamitr AI
+                            </button>
+                            <button onclick="navigateTo('lawyers')" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition flex items-center justify-center gap-2">
+                                <i data-lucide="users"></i> Find a Lawyer
+                            </button>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 relative">
+                        <!-- Hero Image Placeholder/Illustration -->
+                        <div class="relative bg-gradient-to-tr from-brand-800 to-brand-600 rounded-2xl p-1 shadow-2xl transform rotate-2 hover:rotate-0 transition duration-500">
+                            <div class="bg-slate-900 rounded-xl overflow-hidden relative h-80 md:h-96 w-full flex items-center justify-center">
+                                <div class="text-center space-y-4 p-8">
+                                    <div class="w-20 h-20 bg-brand-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i data-lucide="shield-check" class="w-10 h-10 text-brand-400"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-white">Your Rights, Protected.</h3>
+                                    <p class="text-slate-400">24/7 Legal guidance at your fingertips.</p>
+                                    
+                                    <!-- Floating Cards Simulation -->
+                                    <div class="absolute -bottom-6 -right-6 bg-white text-slate-900 p-4 rounded-lg shadow-xl w-48 animate-bounce" style="animation-duration: 3s;">
+                                        <div class="flex items-center gap-3">
+                                            <div class="bg-green-100 p-2 rounded-full text-green-600"><i data-lucide="check" class="w-4 h-4"></i></div>
+                                            <div>
+                                                <div class="text-xs text-gray-500">Case Status</div>
+                                                <div class="font-bold text-sm">Resolved</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl font-serif font-bold text-gray-900 mb-4">Why Choose Nayamitr?</h2>
+                        <p class="text-gray-600 max-w-2xl mx-auto">We combine cutting-edge technology with legal expertise to provide a seamless experience.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Feature 1 -->
+                        <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 hover:shadow-xl transition group cursor-pointer" onclick="navigateTo('chat')">
+                            <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition">
+                                <i data-lucide="bot" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">AI Legal Assistant</h3>
+                            <p class="text-gray-600 leading-relaxed">Get instant answers to your legal queries in simple language. Powered by advanced AI trained on Indian Law.</p>
+                        </div>
+
+                        <!-- Feature 2 -->
+                        <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 hover:shadow-xl transition group cursor-pointer" onclick="navigateTo('lawyers')">
+                            <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 mb-6 group-hover:scale-110 transition">
+                                <i data-lucide="gavel" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">Expert Lawyers</h3>
+                            <p class="text-gray-600 leading-relaxed">Connect with verified legal practitioners based on your location and case type. Book consultations instantly.</p>
+                        </div>
+
+                        <!-- Feature 3 -->
+                        <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 hover:shadow-xl transition group cursor-pointer" onclick="navigateTo('services')">
+                            <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-6 group-hover:scale-110 transition">
+                                <i data-lucide="file-text" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">Document Drafter</h3>
+                            <p class="text-gray-600 leading-relaxed">Auto-generate legal documents like rental agreements, affidavits, and notices with our smart templates.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: OVERVIEW / ABOUT -->
+        <section id="overview" class="hidden fade-in bg-white">
+            <!-- Header with visual structure -->
+            <div class="bg-brand-900 text-white py-16 relative overflow-hidden text-center">
+                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-10"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <h1 class="text-4xl md:text-5xl font-serif font-bold mb-4">Our Mission: Justice for All</h1>
+                    <p class="text-xl text-brand-100 max-w-2xl mx-auto leading-relaxed">
+                        Nayamitr is building India's largest digital legal ecosystem. We believe that legal assistance should be accessible, affordable, and understandable for everyone.
+                    </p>
+                </div>
+            </div>
+
+            <!-- "Three Dash Line" Decorative Separator -->
+            <div class="flex justify-center items-center gap-3 -mt-3 relative z-20">
+                <div class="w-16 h-1 bg-amber-500 rounded-full shadow-sm"></div>
+                <div class="w-16 h-1 bg-white border border-gray-100 rounded-full shadow-sm"></div>
+                <div class="w-16 h-1 bg-green-600 rounded-full shadow-sm"></div>
+            </div>
+
+            <!-- Stats (Structured Grid, no overlap) -->
+            <div class="bg-gray-50 py-12 border-b border-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-md transition">
+                            <div class="text-4xl font-bold text-brand-600 mb-2">10,000+</div>
+                            <div class="text-gray-600 font-medium uppercase tracking-wider text-sm">Legal Queries Answered</div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-md transition">
+                            <div class="text-4xl font-bold text-accent-500 mb-2">500+</div>
+                            <div class="text-gray-600 font-medium uppercase tracking-wider text-sm">Verified Lawyers</div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:shadow-md transition">
+                            <div class="text-4xl font-bold text-green-600 mb-2">24/7</div>
+                            <div class="text-gray-600 font-medium uppercase tracking-wider text-sm">AI Assistance Available</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works (Structured Flow) -->
+            <div class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl font-serif font-bold text-gray-900 mb-4">How It Works</h2>
+                        <p class="text-gray-600">Three simple steps to resolve your legal issues</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                        <!-- Connecting Dashed Line (The "Three Dash Line" visual) -->
+                        <div class="hidden md:block absolute top-12 left-0 w-full border-t-2 border-dashed border-gray-300 z-0 transform translate-y-2"></div>
+
+                        <!-- Step 1 -->
+                        <div class="relative z-10 text-center bg-white p-4">
+                            <div class="w-24 h-24 bg-white border-4 border-brand-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                                <i data-lucide="message-square" class="w-10 h-10 text-brand-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-900 mb-3">1. Ask AI</h3>
+                            <p class="text-gray-600 leading-relaxed px-4">Type your legal problem in plain language. Our AI analyzes it and provides instant preliminary guidance.</p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative z-10 text-center bg-white p-4">
+                            <div class="w-24 h-24 bg-white border-4 border-brand-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                                <i data-lucide="users" class="w-10 h-10 text-brand-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-900 mb-3">2. Connect</h3>
+                            <p class="text-gray-600 leading-relaxed px-4">Find the right lawyer based on your case type and location from our verified directory.</p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="relative z-10 text-center bg-white p-4">
+                            <div class="w-24 h-24 bg-white border-4 border-brand-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                                <i data-lucide="check-circle" class="w-10 h-10 text-brand-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-900 mb-3">3. Resolve</h3>
+                            <p class="text-gray-600 leading-relaxed px-4">Get your documents drafted, consult securely, and move towards a resolution with confidence.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Values -->
+            <div class="bg-gray-50 py-20 border-t border-gray-200">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h2 class="text-3xl font-serif font-bold text-gray-900 mb-6">Built on Trust & Transparency</h2>
+                            <div class="space-y-6">
+                                <div class="flex gap-4">
+                                    <div class="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i data-lucide="shield" class="w-6 h-6 text-brand-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 text-lg">Data Privacy First</h4>
+                                        <p class="text-gray-600 text-sm mt-1">Your legal data is sensitive. We use enterprise-grade encryption to ensure your conversations remain private.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i data-lucide="zap" class="w-6 h-6 text-brand-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 text-lg">Speed & Efficiency</h4>
+                                        <p class="text-gray-600 text-sm mt-1">Reducing the time from "problem" to "solution" by leveraging automation for routine legal tasks.</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-12 h-12 bg-brand-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i data-lucide="heart-handshake" class="w-6 h-6 text-brand-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 text-lg">Pro Bono Support</h4>
+                                        <p class="text-gray-600 text-sm mt-1">We actively partner with NGOs to provide free legal aid to underserved communities.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+                                <i data-lucide="quote" class="w-10 h-10 text-brand-200 mb-4"></i>
+                                <p class="text-lg text-gray-700 italic mb-6">"Nayamitr helped me understand my property rights without using confusing legal jargon. I found a great lawyer within minutes."</p>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sharma" alt="User" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-brand-900">Anjali Singh</div>
+                                        <div class="text-sm text-gray-500">Small Business Owner, Delhi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Background decoration -->
+                            <div class="absolute -z-10 top-6 -right-6 w-full h-full bg-brand-100 rounded-2xl"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: CASE PENDENCY TRACKER -->
+        <section id="cases" class="hidden fade-in bg-white min-h-[calc(100vh-80px)]">
+            <div class="bg-brand-50 border-b border-brand-100 py-10">
+                <div class="max-w-7xl mx-auto px-4 text-center">
+                    <div class="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full border border-brand-200 mb-4 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                        <span class="text-sm font-medium text-brand-800">Judicial Data Grid 2026</span>
+                    </div>
+                    <h2 class="text-3xl font-serif font-bold text-brand-900">Indian Court Case Pendency</h2>
+                    <p class="text-gray-600 mt-2 max-w-xl mx-auto">Interactive state-wise analysis of pending litigation. Click on any state to view judicial workload.</p>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex flex-col lg:flex-row gap-8 items-start h-full">
+                    
+                    <!-- Map Container -->
+                    <div class="w-full lg:w-2/3 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden relative min-h-[500px] flex items-center justify-center">
+                        <div id="regions_div" class="w-full h-[500px] lg:h-[600px]"></div>
+                        <!-- Loading State -->
+                        <div id="map-loader" class="absolute inset-0 flex items-center justify-center bg-white z-10">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-8 h-8 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
+                                <p class="text-sm text-gray-500 font-medium">Loading Judicial Data...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Panel -->
+                    <div class="w-full lg:w-1/3 space-y-6">
+                        <!-- Selected State Card -->
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                                <i data-lucide="scale" class="w-24 h-24 text-brand-900"></i>
+                            </div>
+                            
+                            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-1">Selected Region</h3>
+                            <h2 id="stats-state-name" class="text-3xl font-serif font-bold text-brand-900 mb-6">Select a State</h2>
+                            
+                            <div class="space-y-4">
+                                <div class="bg-red-50 p-4 rounded-xl border border-red-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="bg-red-100 p-2 rounded-lg text-red-600">
+                                            <i data-lucide="alert-octagon" class="w-5 h-5"></i>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700 block">Pending Cases</span>
+                                            <span class="text-xs text-red-400">Total active litigation</span>
+                                        </div>
+                                    </div>
+                                    <span id="stats-pending" class="text-xl font-bold text-red-600">--</span>
+                                </div>
+
+                                <div class="bg-green-50 p-4 rounded-xl border border-green-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="bg-green-100 p-2 rounded-lg text-green-600">
+                                            <i data-lucide="check-circle" class="w-5 h-5"></i>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700 block">Disposed (YTD)</span>
+                                            <span class="text-xs text-green-500">Cases resolved this year</span>
+                                        </div>
+                                    </div>
+                                    <span id="stats-disposed" class="text-xl font-bold text-green-600">--</span>
+                                </div>
+
+                                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                                            <i data-lucide="users" class="w-5 h-5"></i>
+                                        </div>
+                                        <div>
+                                            <span class="font-medium text-gray-700 block">Judge Vacancy</span>
+                                            <span class="text-xs text-blue-500">Open judicial seats</span>
+                                        </div>
+                                    </div>
+                                    <span id="stats-vacancy" class="text-xl font-bold text-blue-600">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info/CTA Card -->
+                        <div class="bg-brand-900 text-white rounded-2xl shadow-lg p-6 relative overflow-hidden">
+                            <div class="relative z-10">
+                                <h3 class="font-bold text-lg mb-2">Fast-Track Your Case</h3>
+                                <p class="text-brand-100 text-sm mb-4">Stuck in a long legal battle? Our AI can analyze your case documents and suggest speedier resolution paths.</p>
+                                <button onclick="navigateTo('chat')" class="w-full bg-accent-500 text-brand-900 font-bold py-3 rounded-xl hover:bg-accent-400 transition flex items-center justify-center gap-2">
+                                    <i data-lucide="zap" class="w-4 h-4"></i> Analyze Case Delay
+                                </button>
+                            </div>
+                            <!-- Decor -->
+                            <div class="absolute -bottom-4 -right-4 bg-brand-800 rounded-full w-24 h-24 z-0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: LAWYERS DIRECTORY -->
+        <section id="lawyers" class="hidden fade-in bg-gray-50 pb-20">
+            <div class="bg-brand-900 text-white py-12 mb-10">
+                <div class="max-w-7xl mx-auto px-4 text-center">
+                    <h2 class="text-3xl font-serif font-bold">Find the Right Lawyer</h2>
+                    <p class="text-brand-100 mt-2">Browse top-rated legal experts in your area</p>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Filters -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="flex gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
+                        <select class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-brand-500">
+                            <option>Practice Area (All)</option>
+                            <option>Criminal</option>
+                            <option>Civil</option>
+                            <option>Family</option>
+                            <option>Corporate</option>
+                        </select>
+                        <select class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-brand-500">
+                            <option>Location (Delhi)</option>
+                            <option>Mumbai</option>
+                            <option>Bangalore</option>
+                        </select>
+                    </div>
+                    <div class="relative w-full md:w-64">
+                        <input type="text" placeholder="Search by name..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-brand-500">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+                    </div>
+                </div>
+
+                <!-- Lawyer Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Card 1 -->
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden">
+                        <div class="p-6 flex items-start gap-4">
+                            <div class="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Rajesh" alt="Lawyer" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-900">Adv. Rajesh Kumar</h3>
+                                <p class="text-sm text-brand-600 font-medium">High Court, Delhi</p>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-current"></i>
+                                    <span class="text-xs font-bold text-gray-700">4.9</span>
+                                    <span class="text-xs text-gray-400">(120+ Cases)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-4">
+                            <div class="flex gap-2 flex-wrap mb-4">
+                                <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-md">Criminal Law</span>
+                                <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-md">Family Dispute</span>
+                            </div>
+                            <button class="w-full bg-brand-900 text-white py-2 rounded-lg font-medium hover:bg-brand-800 transition text-sm">Book Consultation</button>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden">
+                        <div class="p-6 flex items-start gap-4">
+                            <div class="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Priya&gender=female" alt="Lawyer" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-900">Adv. Priya Sharma</h3>
+                                <p class="text-sm text-brand-600 font-medium">Supreme Court</p>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-current"></i>
+                                    <span class="text-xs font-bold text-gray-700">5.0</span>
+                                    <span class="text-xs text-gray-400">(85 Cases)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-4">
+                            <div class="flex gap-2 flex-wrap mb-4">
+                                <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-md">Corporate</span>
+                                <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-md">IPR</span>
+                            </div>
+                            <button class="w-full bg-brand-900 text-white py-2 rounded-lg font-medium hover:bg-brand-800 transition text-sm">Book Consultation</button>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition border border-gray-100 overflow-hidden">
+                        <div class="p-6 flex items-start gap-4">
+                            <div class="w-16 h-16 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Amit" alt="Lawyer" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-gray-900">Adv. Amit Verma</h3>
+                                <p class="text-sm text-brand-600 font-medium">District Court</p>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-current"></i>
+                                    <span class="text-xs font-bold text-gray-700">4.7</span>
+                                    <span class="text-xs text-gray-400">(200+ Cases)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-4">
+                            <div class="flex gap-2 flex-wrap mb-4">
+                                <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-md">Property</span>
+                                <span class="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded-md">Civil</span>
+                            </div>
+                            <button class="w-full bg-brand-900 text-white py-2 rounded-lg font-medium hover:bg-brand-800 transition text-sm">Book Consultation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: AI CHAT ASSISTANT -->
+        <section id="chat" class="hidden fade-in h-[calc(100vh-80px)] bg-gray-100">
+            <div class="max-w-7xl mx-auto h-full p-4 flex gap-4">
+                
+                <!-- Chat Sidebar (Desktop) -->
+                <div class="hidden md:flex flex-col w-80 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-b border-gray-100 bg-brand-900 text-white">
+                        <h3 class="font-bold">Recent Chats</h3>
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-2 space-y-2">
+                        <div class="p-3 bg-blue-50 text-brand-900 rounded-lg cursor-pointer text-sm font-medium border-l-4 border-brand-500">
+                            Property Dispute Inquiry
+                        </div>
+                        <div class="p-3 hover:bg-gray-50 text-gray-600 rounded-lg cursor-pointer text-sm transition">
+                            Drafting Rental Agreement
+                        </div>
+                        <div class="p-3 hover:bg-gray-50 text-gray-600 rounded-lg cursor-pointer text-sm transition">
+                            Divorce Process Info
+                        </div>
+                    </div>
+                    <div class="p-4 border-t border-gray-100">
+                        <button class="w-full border border-brand-900 text-brand-900 py-2 rounded-lg font-medium hover:bg-brand-50 transition text-sm flex items-center justify-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i> New Chat
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Chat Area -->
+                <div class="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden relative">
+                    <!-- Chat Header -->
+                    <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-white z-10">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-brand-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="bot" class="w-6 h-6 text-brand-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900">Nayamitr Assistant</h3>
+                                <p class="text-xs text-green-500 flex items-center gap-1">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span> Online
+                                </p>
+                            </div>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600"><i data-lucide="more-vertical"></i></button>
+                    </div>
+
+                    <!-- Messages Container -->
+                    <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
+                        <!-- Bot Welcome Message -->
+                        <div class="flex gap-3 max-w-3xl">
+                            <div class="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <i data-lucide="bot" class="w-5 h-5 text-brand-600"></i>
+                            </div>
+                            <div class="bg-white border border-gray-200 p-4 rounded-2xl rounded-tl-none shadow-sm text-gray-700 text-sm leading-relaxed">
+                                <p>Namaste! I am your AI Legal Assistant. You can ask me about Indian laws, drafting documents, or understanding your rights.</p>
+                                <p class="mt-2 text-gray-500 text-xs">Try asking: "How do I file a consumer complaint?"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="p-4 bg-white border-t border-gray-100">
+                        <div class="flex gap-2 items-end">
+                            <button class="p-3 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded-xl transition">
+                                <i data-lucide="paperclip" class="w-5 h-5"></i>
+                            </button>
+                            <div class="flex-1 bg-gray-100 rounded-xl p-2 relative">
+                                <textarea id="chat-input" rows="1" placeholder="Type your legal query here..." class="w-full bg-transparent border-none focus:ring-0 text-sm resize-none max-h-32 focus:outline-none p-1 text-gray-800"></textarea>
+                            </div>
+                            <button onclick="sendMessage()" class="p-3 bg-brand-900 text-white rounded-xl hover:bg-brand-800 transition shadow-lg shadow-brand-900/20">
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: SERVICES -->
+        <section id="services" class="hidden fade-in py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-serif font-bold text-gray-900">Legal Services</h2>
+                    <p class="text-gray-600 mt-2">Professional services tailored to your needs</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Service 1 -->
+                    <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition cursor-pointer hover:border-brand-200">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-4">
+                            <i data-lucide="file-check" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Document Review</h3>
+                        <p class="text-sm text-gray-500 mb-4">Get your contracts and agreements reviewed by experts.</p>
+                        <span class="text-brand-600 text-sm font-medium flex items-center gap-1">Learn More <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition cursor-pointer hover:border-brand-200">
+                        <div class="w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600 mb-4">
+                            <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Legal Notice</h3>
+                        <p class="text-sm text-gray-500 mb-4">Send professionally drafted legal notices instantly.</p>
+                        <span class="text-brand-600 text-sm font-medium flex items-center gap-1">Learn More <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition cursor-pointer hover:border-brand-200">
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 mb-4">
+                            <i data-lucide="building" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Property Check</h3>
+                        <p class="text-sm text-gray-500 mb-4">Verify property documents and title search.</p>
+                        <span class="text-brand-600 text-sm font-medium flex items-center gap-1">Learn More <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                    </div>
+
+                    <!-- Service 4 -->
+                    <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition cursor-pointer hover:border-brand-200">
+                        <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center text-teal-600 mb-4">
+                            <i data-lucide="briefcase" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">Startup Legal</h3>
+                        <p class="text-sm text-gray-500 mb-4">Registration, compliance, and founder agreements.</p>
+                        <span class="text-brand-600 text-sm font-medium flex items-center gap-1">Learn More <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="scale" class="w-6 h-6 text-accent-400"></i>
+                        <span class="font-serif font-bold text-2xl">Nayamitr</span>
+                    </div>
+                    <p class="text-brand-100 text-sm leading-relaxed">
+                        Democratizing legal access through technology. Your trusted companion in the journey of justice.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-accent-400">Platform</h4>
+                    <ul class="space-y-2 text-sm text-brand-100">
+                        <li><a href="#" class="hover:text-white">Find Lawyers</a></li>
+                        <li><a href="#" class="hover:text-white">AI Assistant</a></li>
+                        <li><a href="#" class="hover:text-white">Document Templates</a></li>
+                        <li><a href="#" class="hover:text-white">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-accent-400">Resources</h4>
+                    <ul class="space-y-2 text-sm text-brand-100">
+                        <li><a href="#" class="hover:text-white">Blog</a></li>
+                        <li><a href="#" class="hover:text-white">Legal Dictionary</a></li>
+                        <li><a href="#" class="hover:text-white">FAQs</a></li>
+                        <li><a href="#" class="hover:text-white">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-accent-400">Contact</h4>
+                    <ul class="space-y-2 text-sm text-brand-100">
+                        <li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> support@nayamitr.in</li>
+                        <li class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4"></i> +91 98765 43210</li>
+                        <li class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> New Delhi, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-brand-800 pt-8 text-center text-sm text-brand-200">
+                &copy; 2024 Nayamitr Legal Tech. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Navigation and Interactivity -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Google Charts / Map Logic ---
+        
+        // Mock Data for Indian Court Cases (Simulated 2026 Data)
+        // pending: Total Pending Cases
+        // disposed: Cases Disposed in Current Year
+        // vacancy: Judge Vacancies
+        const caseDataMap = {
+            'Andhra Pradesh': { pending: 450230, disposed: 120000, vacancy: 45 },
+            'Arunachal Pradesh': { pending: 12000, disposed: 4000, vacancy: 5 },
+            'Assam': { pending: 156000, disposed: 45000, vacancy: 25 },
+            'Bihar': { pending: 3200000, disposed: 500000, vacancy: 180 },
+            'Chhattisgarh': { pending: 89000, disposed: 30000, vacancy: 30 },
+            'Goa': { pending: 45000, disposed: 15000, vacancy: 8 },
+            'Gujarat': { pending: 1560000, disposed: 420000, vacancy: 95 },
+            'Haryana': { pending: 810000, disposed: 280000, vacancy: 50 },
+            'Himachal Pradesh': { pending: 84000, disposed: 25000, vacancy: 12 },
+            'Jharkhand': { pending: 498000, disposed: 110000, vacancy: 40 },
+            'Karnataka': { pending: 1780000, disposed: 550000, vacancy: 110 },
+            'Kerala': { pending: 1890000, disposed: 620000, vacancy: 60 },
+            'Madhya Pradesh': { pending: 1410000, disposed: 310000, vacancy: 85 },
+            'Maharashtra': { pending: 4250000, disposed: 850000, vacancy: 150 },
+            'Manipur': { pending: 13000, disposed: 2100, vacancy: 4 },
+            'Meghalaya': { pending: 15000, disposed: 3800, vacancy: 3 },
+            'Mizoram': { pending: 8000, disposed: 1500, vacancy: 2 },
+            'Nagaland': { pending: 5000, disposed: 1200, vacancy: 2 },
+            'Odisha': { pending: 930000, disposed: 220000, vacancy: 70 },
+            'Punjab': { pending: 980000, disposed: 260000, vacancy: 65 },
+            'Rajasthan': { pending: 1920000, disposed: 430000, vacancy: 105 },
+            'Sikkim': { pending: 2000, disposed: 500, vacancy: 1 },
+            'Tamil Nadu': { pending: 1820000, disposed: 600000, vacancy: 90 },
+            'Telangana': { pending: 940000, disposed: 350000, vacancy: 55 },
+            'Tripura': { pending: 28000, disposed: 8000, vacancy: 6 },
+            'Uttar Pradesh': { pending: 9950000, disposed: 1200000, vacancy: 350 },
+            'Uttarakhand': { pending: 267000, disposed: 70000, vacancy: 25 },
+            'West Bengal': { pending: 2680000, disposed: 520000, vacancy: 120 },
+            'Andaman and Nicobar Islands': { pending: 8000, disposed: 1800, vacancy: 2 },
+            'Chandigarh': { pending: 45000, disposed: 12000, vacancy: 5 },
+            'Dadra and Nagar Haveli': { pending: 2000, disposed: 500, vacancy: 1 },
+            'Daman and Diu': { pending: 1500, disposed: 400, vacancy: 0 },
+            'Delhi': { pending: 1120000, disposed: 380000, vacancy: 85 },
+            'Jammu and Kashmir': { pending: 310000, disposed: 60000, vacancy: 25 },
+            'Ladakh': { pending: 1200, disposed: 300, vacancy: 1 },
+            'Lakshadweep': { pending: 500, disposed: 150, vacancy: 0 },
+            'Puducherry': { pending: 35000, disposed: 8200, vacancy: 4 }
+        };
+
+        // ISO 3166-2:IN Codes to prevent Geocoding API calls
+        const stateIsoCodes = {
+            'Andhra Pradesh': 'IN-AP',
+            'Arunachal Pradesh': 'IN-AR',
+            'Assam': 'IN-AS',
+            'Bihar': 'IN-BR',
+            'Chhattisgarh': 'IN-CT',
+            'Goa': 'IN-GA',
+            'Gujarat': 'IN-GJ',
+            'Haryana': 'IN-HR',
+            'Himachal Pradesh': 'IN-HP',
+            'Jharkhand': 'IN-JH',
+            'Karnataka': 'IN-KA',
+            'Kerala': 'IN-KL',
+            'Madhya Pradesh': 'IN-MP',
+            'Maharashtra': 'IN-MH',
+            'Manipur': 'IN-MN',
+            'Meghalaya': 'IN-ML',
+            'Mizoram': 'IN-MZ',
+            'Nagaland': 'IN-NL',
+            'Odisha': 'IN-OR',
+            'Punjab': 'IN-PB',
+            'Rajasthan': 'IN-RJ',
+            'Sikkim': 'IN-SK',
+            'Tamil Nadu': 'IN-TN',
+            'Telangana': 'IN-TG',
+            'Tripura': 'IN-TR',
+            'Uttar Pradesh': 'IN-UP',
+            'Uttarakhand': 'IN-UT',
+            'West Bengal': 'IN-WB',
+            'Andaman and Nicobar Islands': 'IN-AN',
+            'Chandigarh': 'IN-CH',
+            'Dadra and Nagar Haveli': 'IN-DN',
+            'Daman and Diu': 'IN-DD',
+            'Delhi': 'IN-DL',
+            'Jammu and Kashmir': 'IN-JK',
+            'Ladakh': 'IN-LA',
+            'Lakshadweep': 'IN-LD',
+            'Puducherry': 'IN-PY'
+        };
+
+        // Load Google Charts
+        google.charts.load('current', {
+            'packages': ['geochart'],
+        });
+        
+        // Define draw function globally but don't call immediately
+        let chart;
+        let chartData;
+        let chartOptions;
+
+        function drawRegionsMap() {
+            // Check if library is loaded
+            if (!google.visualization) return;
+
+            // Prepare Data Table
+            const dataArray = [['State', 'Pending Cases']];
+            for (const [state, data] of Object.entries(caseDataMap)) {
+                const isoCode = stateIsoCodes[state] || state;
+                // Use object notation {v: value, f: formatted} to keep display name correct
+                // v: isoCode (used for mapping), f: state name (used for display/tooltip)
+                dataArray.push([{v: isoCode, f: state}, data.pending]);
+            }
+            chartData = google.visualization.arrayToDataTable(dataArray);
+
+            chartOptions = {
+                region: 'IN', // India
+                resolution: 'provinces',
+                displayMode: 'regions',
+                // Red color scale for severity of cases
+                colorAxis: {colors: ['#dcfce7', '#dc2626']}, // Light Green to Deep Red
+                backgroundColor: 'transparent',
+                datalessRegionColor: '#f3f4f6',
+                defaultColor: '#f3f4f6',
+                tooltip: {textStyle: {fontName: 'Inter', fontSize: 14}, isHtml: true},
+                legend: 'none'
+            };
+
+            const container = document.getElementById('regions_div');
+            // Hide loader
+            document.getElementById('map-loader').style.display = 'none';
+
+            if (!chart) {
+                chart = new google.visualization.GeoChart(container);
+                
+                // Add Event Listener for Click
+                google.visualization.events.addListener(chart, 'select', function() {
+                    const selection = chart.getSelection();
+                    if (selection.length > 0) {
+                        const row = selection[0].row;
+                        // getFormattedValue returns the 'f' property (State Name)
+                        const stateName = chartData.getFormattedValue(row, 0);
+                        updateStats(stateName);
+                    }
+                });
+            }
+
+            chart.draw(chartData, chartOptions);
+        }
+
+        function updateStats(stateName) {
+            const data = caseDataMap[stateName];
+            if (data) {
+                document.getElementById('stats-state-name').textContent = stateName;
+                
+                // Animate Numbers
+                animateValue('stats-pending', data.pending);
+                animateValue('stats-disposed', data.disposed);
+                animateValue('stats-vacancy', data.vacancy);
+            }
+        }
+
+        function animateValue(id, value) {
+            const obj = document.getElementById(id);
+            const current = parseInt(obj.textContent.replace(/,/g, '')) || 0;
+            const range = value - current;
+            const duration = 500;
+            let start = null;
+
+            function step(timestamp) {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / duration, 1);
+                obj.textContent = Math.floor(current + (progress * range)).toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        // --- Navigation Logic ---
+        function navigateTo(sectionId) {
+            // Hide all sections
+            const sections = ['home', 'lawyers', 'chat', 'services', 'cases', 'overview'];
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            // Show selected section
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('fade-in');
+            }
+
+            // Specific logic for Map
+            if (sectionId === 'cases') {
+                // We need a slight delay to allow the div to become visible before drawing
+                // otherwise Google Charts calculates dimensions as 0
+                setTimeout(() => {
+                    google.charts.setOnLoadCallback(drawRegionsMap);
+                    // Force redraw if already loaded
+                    if (chart) drawRegionsMap();
+                    // Select default state (Delhi) for demo
+                    updateStats('Delhi');
+                }, 100);
+            }
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Window Resize Handler for Map
+        window.addEventListener('resize', () => {
+            if (!document.getElementById('cases').classList.contains('hidden')) {
+                drawRegionsMap();
+            }
+        });
+
+        // Chat Logic
+        const chatInput = document.getElementById('chat-input');
+        const messagesContainer = document.getElementById('chat-messages');
+
+        // Allow sending with Enter key
+        chatInput?.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // Add User Message
+            appendMessage(text, 'user');
+            chatInput.value = '';
+
+            // Show Typing Indicator
+            const typingIndicatorId = showTypingIndicator();
+
+            // Call Gemini API
+            const responseText = await callGeminiAPI(text);
+
+            // Remove Indicator
+            removeTypingIndicator(typingIndicatorId);
+            
+            // Basic Formatting: Convert **bold** to <strong> and newlines to <br>
+            const formattedResponse = responseText
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+
+            appendMessage(formattedResponse, 'bot');
+        }
+
+        async function callGeminiAPI(userQuery) {
+            const apiKey = ""; // API Key provided by execution environment
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const systemPrompt = `You are Nayamitr, an AI legal assistant specialized in Indian Law. 
+            Your mission is to make justice accessible to the common man.
+            
+            Guidelines:
+            1. Provide accurate, simplified legal information based on Indian laws (IPC, CrPC, Constitution, etc.).
+            2. Help with drafting basic legal documents conceptually (e.g., what goes into a rent agreement).
+            3. Be empathetic, professional, and clear. Avoid overly complex jargon.
+            4. If the user asks for lawyer recommendations, suggest using the 'Find Lawyers' section of the website.
+            5. ALWAYS explicitly state that you are an AI and this is for informational purposes only, not a substitute for a qualified lawyer's advice.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            const delays = [1000, 2000, 4000, 8000, 16000];
+            for (let i = 0; i <= 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 429 && i < 5) {
+                            await new Promise(resolve => setTimeout(resolve, delays[i]));
+                            continue;
+                        }
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "I apologize, but I couldn't process that request right now.";
+                } catch (error) {
+                    if (i === 5) return "I am currently experiencing high traffic. Please try again later.";
+                    await new Promise(resolve => setTimeout(resolve, delays[i]));
+                }
+            }
+        }
+
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = sender === 'user' ? 'flex gap-3 max-w-3xl ml-auto justify-end' : 'flex gap-3 max-w-3xl';
+            
+            const avatar = sender === 'user' 
+                ? `<div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0 mt-1"><i data-lucide="user" class="w-5 h-5 text-gray-600"></i></div>`
+                : `<div class="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1"><i data-lucide="bot" class="w-5 h-5 text-brand-600"></i></div>`;
+
+            const bubbleClass = sender === 'user'
+                ? 'bg-brand-900 text-white p-4 rounded-2xl rounded-tr-none shadow-sm text-sm'
+                : 'bg-white border border-gray-200 p-4 rounded-2xl rounded-tl-none shadow-sm text-gray-700 text-sm leading-relaxed';
+
+            div.innerHTML = sender === 'user' 
+                ? `<div class="${bubbleClass}">${text}</div>` 
+                : `${avatar}<div class="${bubbleClass}">${text}</div>`;
+            
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            lucide.createIcons();
+        }
+
+        function showTypingIndicator() {
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex gap-3 max-w-3xl';
+            div.innerHTML = `
+                <div class="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1"><i data-lucide="bot" class="w-5 h-5 text-brand-600"></i></div>
+                <div class="bg-white border border-gray-200 p-4 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-1">
+                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                    <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                </div>
+            `;
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            lucide.createIcons();
+            return id;
+        }
+
+        function removeTypingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+    </script>
+</body>
+</html>
